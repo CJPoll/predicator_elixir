@@ -39,7 +39,7 @@ defmodule Predicator.Evaluator do
 
   """
   @spec execute(list(), struct()|map()) :: boolean() | error_t
-  def execute(inst, context_struct \\ %{}, opts \\ [map_type: :atom, nil_values: ["", nil]]) do
+  def execute(inst, context_struct \\ %{}, opts \\ [map_type: :string, nil_values: ["", nil]]) do
     machine = %Machine{instructions: inst, context_struct: context_struct, opts: opts}
     _execute(_next_ip(machine), machine)
   end
@@ -212,6 +212,9 @@ defmodule Predicator.Evaluator do
     _execute(_next_ip(machine), machine)
   end
 
+  def _execute(["load"|[val|_]], machine=%Machine{opts: [map_type: :string]}) when is_binary(val) do
+
+  end
   def _execute(["load"|[val|_]], machine=%Machine{opts: [map_type: :string]}) do
     case Map.get(machine.context_struct, val, :nokey) do
       :nokey -> ValueError.value_error(machine)

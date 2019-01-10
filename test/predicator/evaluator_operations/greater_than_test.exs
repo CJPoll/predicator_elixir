@@ -10,9 +10,10 @@ defmodule Predicator.EvaluatorOperation.GreaterThanTest do
       assert execute(inst) == true
     end
 
+    @tag :now
     test "load val GT integer" do
       inst = [["load", "age"], ["lit", 20], ["compare", "GT"]]
-      assert execute(inst, %TestUser{}) == true
+      assert execute(inst, %TestUser{}, [map_type: :atom]) == true
     end
 
     test "load val from string-keyed map GT integer" do

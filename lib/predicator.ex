@@ -19,10 +19,10 @@ defmodule Predicator do
   leex_string/1 takes string or charlist and returns a lexed tuple for parsing.
 
     iex> leex_string('10 > 5')
-    {:ok, [{:lit, 1, 10}, {:comparator, 1, :GT}, {:lit, 1, 5}], 1}
+    {:ok, [{:lit, 1, 10}, {:compare, 1, :GT}, {:lit, 1, 5}], 1}
 
     iex> leex_string("apple > 5532")
-    {:ok, [{:load, 1, :apple}, {:comparator, 1, :GT}, {:lit, 1, 5532}], 1}
+    {:ok, [{:load, 1, :apple}, {:compare, 1, :GT}, {:lit, 1, 5532}], 1}
   """
   @spec leex_string(String.t) :: {:ok|:error, list|tuple, non_neg_integer()}
   def leex_string(str) when is_binary(str), do: @lexer.string(to_charlist(str))
@@ -34,14 +34,14 @@ defmodule Predicator do
   parse_lexed/1 takes a leexed token(list or tup) and returns a predicate. It also
   can take optional atom for type of token keys to return. options are `:string_key_inst` & `:atom_key_inst`
 
-    iex> parse_lexed({:ok, [{:load, 1, :apple}, {:comparator, 1, :GT}, {:lit, 1, 5532}], 1})
-    {:ok, [["load", :apple], ["lit", 5532], ["comparator", "GT"]]}
+    iex> parse_lexed({:ok, [{:load, 1, :apple}, {:compare, 1, :GT}, {:lit, 1, 5532}], 1})
+    {:ok, [["load", :apple], ["lit", 5532], ["compare", "GT"]]}
 
-    iex> parse_lexed({:ok, [{:load, 1, :apple}, {:comparator, 1, :GT}, {:lit, 1, 5532}], 1}, :string_key_inst)
-    {:ok, [["load", :apple], ["lit", 5532], ["comparator", "GT"]]}
+    iex> parse_lexed({:ok, [{:load, 1, :apple}, {:compare, 1, :GT}, {:lit, 1, 5532}], 1}, :string_key_inst)
+    {:ok, [["load", :apple], ["lit", 5532], ["compare", "GT"]]}
 
-    iex> parse_lexed([{:load, 1, :apple}, {:comparator, 1, :GT}, {:lit, 1, 5532}], :atom_key_inst)
-    {:ok, [[:load, :apple], [:lit, 5532], [:comparator, :GT]]}
+    iex> parse_lexed([{:load, 1, :apple}, {:compare, 1, :GT}, {:lit, 1, 5532}], :atom_key_inst)
+    {:ok, [[:load, :apple], [:lit, 5532], [:compare, :GT]]}
   """
   @spec parse_lexed(list, token_key_t) :: {:ok|:error, list|tuple}
   def parse_lexed(token, opt \\ :string_key_inst)
@@ -57,11 +57,13 @@ defmodule Predicator do
   leex_and_parse/1 takes a string or charlist and does all lexing and parsing then
   returns the predicate.
 
+  takes token types `:string_key_inst` or `:atom_key_inst`, defaults to `:string_key_inst`.
+
     iex> leex_and_parse("13 > 12")
-    [["lit", 13], ["lit", 12], ["comparator", "GT"]]
+    [["lit", 13], ["lit", 12], ["compare", "GT"]]
 
     iex> leex_and_parse('532 == 532', :atom_key_inst)
-    [[:lit, 532], [:lit, 532], [:comparator, :EQ]]
+    [[:lit, 532], [:lit, 532], [:compare, :EQ]]
   """
   @spec leex_and_parse(String.t) :: list|{:error, any(), non_neg_integer}
   def leex_and_parse(str, token_type \\ :string_key_inst) do
@@ -71,9 +73,12 @@ defmodule Predicator do
   end
 
   @doc """
-  eval/3 takes a predicate set, a context struct and options
+  eval/3 takes a predicate set, a context struct and options.
+
+  opts take an atom keyed list with `map_type: :string|:atom` and `nil_values: [term(), ...]`
+  default opts are set as [map_type: :string, nil_values: ["", nil]]
   """
-  def eval(inst, context_struct \\ %{}, opts \\ [map_type: :atom])
+  def eval(inst, context_struct \\ %{}, opts)
   def eval(inst, context_struct, opts), do: Evaluator.execute(inst, context_struct, opts)
 
 end
