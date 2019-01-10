@@ -3,7 +3,7 @@ Header
 
 Nonterminals predicates predicate.
 
-Terminals lit load comparator jfalse jtrue.
+Terminals lit load compare jfalse jtrue.
 
 Rootsymbol predicates.
 
@@ -13,10 +13,10 @@ predicates -> predicates jfalse predicate : {'$1', jfalse, '$3'}.
 predicates -> predicate jtrue predicate : ['$1', jtrue, '$3']. %% jtrue
 predicates -> predicates jtrue predicate : {'$1', jtrue, '$3'}.
 
-predicate -> lit comparator load : [unwrap('$1'), unwrap('$3'), unwrap('$2')].
-predicate -> load comparator lit : [unwrap('$1'), unwrap('$3'), unwrap('$2')].
-predicate -> lit comparator lit : [unwrap('$1'), unwrap('$3'), unwrap('$2')].
-predicate -> load comparator load : [unwrap('$1'), unwrap('$3'), unwrap('$2')].
+predicate -> lit compare load : [unwrap('$1'), unwrap('$3'), unwrap('$2')].
+predicate -> load compare lit : [unwrap('$1'), unwrap('$3'), unwrap('$2')].
+predicate -> lit compare lit : [unwrap('$1'), unwrap('$3'), unwrap('$2')].
+predicate -> load compare load : [unwrap('$1'), unwrap('$3'), unwrap('$2')].
 
 Erlang code.
 

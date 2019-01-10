@@ -220,8 +220,8 @@ defmodule Predicator.Evaluator do
         _execute(_next_ip(machine), machine)
     end
   end
-  def _execute(["load"|[val|_]], machine=%Machine{}) do
-    case Map.get(machine.context_struct, String.to_existing_atom(val), :nokey) do
+  def _execute(["load"|[val|_]], machine=%Machine{opts: [map_type: :atom]}) do
+    case Map.get(machine.context_struct, val, :nokey) do
       :nokey -> ValueError.value_error(machine)
       user_key ->
         machine = %Machine{ machine | stack: [user_key|machine.stack], ip: machine.ip + 1 }

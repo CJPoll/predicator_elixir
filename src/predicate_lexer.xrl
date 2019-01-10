@@ -17,9 +17,9 @@ Rules.
 
 {WHITESPACE}   : skip_token.
 
-{GREATER_THAN} : {token, {comparator, TokenLine, 'GT'}}.
-{LESS_THAN}    : {token, {comparator, TokenLine, 'LT'}}.
-{EQUAL}        : {token, {comparator, TokenLine, 'EQ'}}.
+{GREATER_THAN} : {token, {compare, TokenLine, 'GT'}}.
+{LESS_THAN}    : {token, {compare, TokenLine, 'LT'}}.
+{EQUAL}        : {token, {compare, TokenLine, 'EQ'}}.
 % {BETWEEN}      : {token, {comparator, TokenLine, 'BETWEEN'}}.
 
 and            : {token, {jfalse, TokenLine, list_to_existing_atom(TokenChars)}}.
